@@ -3,10 +3,35 @@ import { supabase } from './supabaseClient';
 import Header from './Header';
 import Menu from './Menu';
 import History from './History';
+import MonthFilter from './MonthFilter';
+
 
 function App() {
   const [transactions, setTransactions] = useState([]);
   const [hasLoaded, setHasLoaded] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState('all');
+  const [showFilter, setShowFilter] = useState(false);
+
+  const [filterMode, setFilterMode] = useState('month');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+  const filteredTransactions = transactions.filter((t) => {
+  const date = new Date(t.date);
+  const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+
+  if (filterMode === 'month') {
+    return selectedMonth === 'all' || monthKey === selectedMonth;
+  }
+
+  if (filterMode === 'range') {
+    const tDate = date.toISOString().split('T')[0]; // format YYYY-MM-DD
+    return (!startDate || tDate >= startDate) && (!endDate || tDate <= endDate);
+  }
+
+  return true;
+});
+
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -68,11 +93,25 @@ function App() {
       <Header />
       <Menu
         onClickHistory={() => console.log('History clicked')}
-        onClickFilter={() => console.log('Filter clicked')}
+        onClickFilter={() => setShowFilter((prev) => !prev)}
         onClickGraph={() => console.log('Graph clicked')}
       />
+      {showFilter && (
+        <MonthFilter
+          transactions={transactions}
+          selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
+          filterMode={filterMode}
+          setFilterMode={setFilterMode}
+          startDate={startDate}
+          setStartDate={setStartDate}
+          endDate={endDate}
+          setEndDate={setEndDate}
+        />
+      )}
+
       <History
-        transactions={transactions}
+        transactions={filteredTransactions}
         onDelete={handleDeleteSelected}
         onAdd={handleAddTransaction}
       />
