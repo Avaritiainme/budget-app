@@ -4,6 +4,7 @@ import Header from './Header';
 import Menu from './Menu';
 import History from './History';
 import MonthFilter from './MonthFilter';
+import Graph from './Graph'; 
 
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
   const [hasLoaded, setHasLoaded] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState('all');
   const [showFilter, setShowFilter] = useState(false);
+  const [view, setView] = useState('history'); 
 
   const [filterMode, setFilterMode] = useState('month');
   const [startDate, setStartDate] = useState('');
@@ -19,6 +21,9 @@ function App() {
   const filteredTransactions = transactions.filter((t) => {
   const date = new Date(t.date);
   const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+  
+
+
 
   if (filterMode === 'month') {
     return selectedMonth === 'all' || monthKey === selectedMonth;
@@ -92,29 +97,38 @@ function App() {
     <div style={styles.background}>
       <Header />
       <Menu
-        onClickHistory={() => console.log('History clicked')}
+        onClickHistory={() => setView('history')}
         onClickFilter={() => setShowFilter((prev) => !prev)}
-        onClickGraph={() => console.log('Graph clicked')}
+        onClickGraph={() => setView('graph')}
       />
+      
       {showFilter && (
-        <MonthFilter
-          transactions={transactions}
-          selectedMonth={selectedMonth}
-          setSelectedMonth={setSelectedMonth}
-          filterMode={filterMode}
-          setFilterMode={setFilterMode}
-          startDate={startDate}
-          setStartDate={setStartDate}
-          endDate={endDate}
-          setEndDate={setEndDate}
-        />
-      )}
+      <MonthFilter
+        transactions={transactions}
+        selectedMonth={selectedMonth}
+        setSelectedMonth={setSelectedMonth}
+        filterMode={filterMode}
+        setFilterMode={setFilterMode}
+        startDate={startDate}
+        setStartDate={setStartDate}
+        endDate={endDate}
+        setEndDate={setEndDate}
+      />
+    )}
 
+    {view === 'history' && (
       <History
         transactions={filteredTransactions}
         onDelete={handleDeleteSelected}
         onAdd={handleAddTransaction}
       />
+    )}
+
+    {view === 'graph' && (
+      <Graph transactions={filteredTransactions} />
+    )}
+
+
     </div>
   );
 }
