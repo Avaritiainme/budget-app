@@ -7,6 +7,7 @@ import MonthFilter from './MonthFilter';
 import Graph from './Graph';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
+import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -15,11 +16,10 @@ function App() {
   const [hasLoaded, setHasLoaded] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState('all');
   const [showFilter, setShowFilter] = useState(false);
-  const [view, setView] = useState('history');
   const [filterMode, setFilterMode] = useState('month');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [authMode, setAuthMode] = useState('login'); 
+    const navigate = useNavigate();
 
 
   // Récupérer l'utilisateur connecté
@@ -125,10 +125,17 @@ function App() {
   if (loadingUser) return <div>Chargement de la session...</div>;
 
   if (!user) {
-    return authMode === 'login' ? (
-      <LoginForm onLogin={setUser} goToRegister={() => setAuthMode('register')} />
-    ) : (
-      <RegisterForm onLogin={setUser} goToLogin={() => setAuthMode('login')} />
+    return (
+      <Routes>
+        <Route
+          path="/register"
+          element={<RegisterForm onLogin={setUser} goToLogin={() => navigate('/login')} />}
+        />
+        <Route
+          path="*"
+          element={<LoginForm onLogin={setUser} goToRegister={() => navigate('/register')} />}
+        />
+      </Routes>
     );
   }
 
@@ -136,9 +143,9 @@ function App() {
     <div style={styles.background}>
       <Header />
       <Menu
-        onClickHistory={() => setView('history')}
+        onClickHistory={() => navigate('/')}
         onClickFilter={() => setShowFilter((prev) => !prev)}
-        onClickGraph={() => setView('graph')}
+        onClickGraph={() => navigate('/graph')}
       />
 
       {showFilter && (
@@ -155,17 +162,22 @@ function App() {
         />
       )}
 
-      {view === 'history' && (
-        <History
-          transactions={filteredTransactions}
-          onDelete={handleDeleteSelected}
-          onAdd={handleAddTransaction}
+      <Routes>
+        <Route
+          path="/graph"
+          element={<Graph transactions={filteredTransactions} />}
         />
-      )}
-
-      {view === 'graph' && (
-        <Graph transactions={filteredTransactions} />
-      )}
+      <Route
+          path="*"
+          element={
+            <History
+              transactions={filteredTransactions}
+              onDelete={handleDeleteSelected}
+              onAdd={handleAddTransaction}
+            />
+          }
+        />
+      </Routes>
     </div>
   );
 }
