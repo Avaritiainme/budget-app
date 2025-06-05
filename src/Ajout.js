@@ -20,8 +20,7 @@ function Ajout({ onAdd }) {
         setDate('');
     };
 
-    const styles = {
-    form: {
+    const styles = {    form: {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',

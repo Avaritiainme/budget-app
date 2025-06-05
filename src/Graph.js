@@ -20,8 +20,7 @@ function Graph({ transactions }) {
 
 
     const COLORS = ['#9B59B6', '#E04949'];
-    const styles = {
-    container: {
+    const styles = {    container: {
       textAlign: 'center',
       fontFamily: 'Galdeano, sans-serif',
       padding: '2rem',

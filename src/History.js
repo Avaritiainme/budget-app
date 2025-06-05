@@ -12,8 +12,7 @@ function History({ transactions, onDelete, onAdd }) {
         );
     }
 
-    const styles = {
-    container: {
+    const styles = {    container: {
       backgroundColor: '#D9D9D9',
       padding: '2rem',
       margin: '2rem auto',
@@ -53,8 +52,7 @@ function History({ transactions, onDelete, onAdd }) {
       minWidth: '100px',
       textAlign: 'center',
       fontFamily: 'Galdeano, sans-serif',
-    },
-    totalBox: {
+    },    totalBox: {
       backgroundColor: '#261B1B',
       color: '#FFFFFF',
       padding: '0.75rem 1.5rem',

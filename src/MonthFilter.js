@@ -27,9 +27,7 @@ function MonthFilter({
     if (value === 'all') return 'Depuis le début';
     const [year, month] = value.split('-');
     return `${new Date(year, month - 1).toLocaleString('fr-FR', { month: 'long' })} ${year}`;
-  };
-
-  const styles = {
+  };  const styles = {
     container: {
       textAlign: 'center',
       marginBottom: '1rem',

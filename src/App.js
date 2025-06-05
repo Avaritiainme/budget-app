@@ -4,45 +4,44 @@ import Header from './Header';
 import Menu from './Menu';
 import History from './History';
 import MonthFilter from './MonthFilter';
-import Graph from './Graph'; 
-
+import Graph from './Graph';
+import LoginForm from './LoginForm';
+import RegisterForm from './RegisterForm';
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [loadingUser, setLoadingUser] = useState(true);
   const [transactions, setTransactions] = useState([]);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState('all');
   const [showFilter, setShowFilter] = useState(false);
-  const [view, setView] = useState('history'); 
-
+  const [view, setView] = useState('history');
   const [filterMode, setFilterMode] = useState('month');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-
-  const filteredTransactions = transactions.filter((t) => {
-  const date = new Date(t.date);
-  const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-  
+  const [authMode, setAuthMode] = useState('login'); 
 
 
-
-  if (filterMode === 'month') {
-    return selectedMonth === 'all' || monthKey === selectedMonth;
-  }
-
-  if (filterMode === 'range') {
-    const tDate = date.toISOString().split('T')[0]; // format YYYY-MM-DD
-    return (!startDate || tDate >= startDate) && (!endDate || tDate <= endDate);
-  }
-
-  return true;
-});
-
-
+  // Récupérer l'utilisateur connecté
   useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      setLoadingUser(false); 
+      console.log("Utilisateur connecté :", user);
+    };
+    fetchUser();
+  }, []);
+
+  // Récupérer les transactions de l'utilisateur
+  useEffect(() => {
+    if (!user) return;
+
     const fetchTransactions = async () => {
       const { data, error } = await supabase
         .from('transactions')
         .select('*')
+        .eq('user_id', user.id)
         .order('date', { ascending: false });
 
       if (error) {
@@ -54,7 +53,7 @@ function App() {
     };
 
     fetchTransactions();
-  }, []);
+  }, [user]);
 
   const handleDeleteSelected = async (idsToDelete) => {
     if (idsToDelete.length === 0) return;
@@ -72,26 +71,66 @@ function App() {
   };
 
   const handleAddTransaction = async (newTransaction) => {
-    const { data, error } = await supabase
-      .from('transactions')
-      .insert([newTransaction])
-      .select();
-
-    if (error) {
-      console.error('Error adding transaction:', error);
-    } else {
-      setTransactions([data[0], ...transactions]);
+    if (!user || !user.id) {
+      console.error("Erreur : utilisateur non défini au moment de l'ajout.");
+      return;
     }
-  };
 
-  const styles = {
+  // 👇 Construction de l’objet à insérer
+  const toInsert = { ...newTransaction, user_id: user.id };
+  console.log("Transaction insérée :", toInsert); // debug facultatif
+
+  const { data, error } = await supabase
+    .from('transactions')
+    .insert([toInsert])
+    .select();
+
+  if (error) {
+    console.error('Erreur d’insertion Supabase :', error); // debug
+  } else {
+    setTransactions([data[0], ...transactions]);
+  }
+};
+
+  const filteredTransactions = transactions.filter((t) => {
+    const date = new Date(t.date);
+    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+
+    if (filterMode === 'month') {
+      return selectedMonth === 'all' || monthKey === selectedMonth;
+    }
+
+    if (filterMode === 'range') {
+      const tDate = date.toISOString().split('T')[0];
+      return (!startDate || tDate >= startDate) && (!endDate || tDate <= endDate);
+    }
+
+    return true;
+  });  const styles = {
     background: {
       backgroundImage: 'url("/background.png")',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
-      minHeight: '100vh',
+      backgroundRepeat: 'no-repeat',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100vw',
+      height: '100vh',
+      margin: 0,
+      padding: 0,
     },
   };
+
+  if (loadingUser) return <div>Chargement de la session...</div>;
+
+  if (!user) {
+    return authMode === 'login' ? (
+      <LoginForm onLogin={setUser} goToRegister={() => setAuthMode('register')} />
+    ) : (
+      <RegisterForm onLogin={setUser} goToLogin={() => setAuthMode('login')} />
+    );
+  }
 
   return (
     <div style={styles.background}>
@@ -101,34 +140,32 @@ function App() {
         onClickFilter={() => setShowFilter((prev) => !prev)}
         onClickGraph={() => setView('graph')}
       />
-      
+
       {showFilter && (
-      <MonthFilter
-        transactions={transactions}
-        selectedMonth={selectedMonth}
-        setSelectedMonth={setSelectedMonth}
-        filterMode={filterMode}
-        setFilterMode={setFilterMode}
-        startDate={startDate}
-        setStartDate={setStartDate}
-        endDate={endDate}
-        setEndDate={setEndDate}
-      />
-    )}
+        <MonthFilter
+          transactions={transactions}
+          selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
+          filterMode={filterMode}
+          setFilterMode={setFilterMode}
+          startDate={startDate}
+          setStartDate={setStartDate}
+          endDate={endDate}
+          setEndDate={setEndDate}
+        />
+      )}
 
-    {view === 'history' && (
-      <History
-        transactions={filteredTransactions}
-        onDelete={handleDeleteSelected}
-        onAdd={handleAddTransaction}
-      />
-    )}
+      {view === 'history' && (
+        <History
+          transactions={filteredTransactions}
+          onDelete={handleDeleteSelected}
+          onAdd={handleAddTransaction}
+        />
+      )}
 
-    {view === 'graph' && (
-      <Graph transactions={filteredTransactions} />
-    )}
-
-
+      {view === 'graph' && (
+        <Graph transactions={filteredTransactions} />
+      )}
     </div>
   );
 }
