@@ -7,13 +7,23 @@ function Ajout({ onAdd }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!description || !amount ) return;
 
-        const newTransaction ={
+        if (!description.trim()) {
+            alert('Le libell\xE9 est obligatoire.');
+            return;
+        }
+
+        if (amount === '' || isNaN(amount)) {
+            alert('Le montant doit \xEAtre un nombre.');
+            return;
+        }
+
+        const newTransaction = {
             description,
             amount: parseFloat(amount),
             date: date ? new Date(date).toISOString() : new Date().toISOString(),
-        }
+        };
+
         onAdd(newTransaction);
         setDescription('');
         setAmount('');

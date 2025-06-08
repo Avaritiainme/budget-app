@@ -7,6 +7,11 @@ export default function RegisterForm({ goToLogin }) {
   const [confirm, setConfirm] = useState('');
 
   const handleRegister = async () => {
+    if (!email.trim() || !password || !confirm) {
+      alert('Veuillez remplir tous les champs.');
+      return;
+    }
+    
     if (password !== confirm) {
       alert("Les mots de passe ne correspondent pas.");
       return;

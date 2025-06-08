@@ -6,6 +6,11 @@ export default function LoginForm({ onLogin, goToRegister }) {
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
+    if (!email.trim() || !password) {
+      alert('Veuillez saisir votre email et votre mot de passe.');
+      return;
+    }
+    
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {

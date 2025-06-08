@@ -57,6 +57,24 @@ function MonthFilter({
     },
   };
 
+  const handleStartChange = (e) => {
+    const value = e.target.value;
+    if (endDate && value && value > endDate) {
+      alert('La date de d\xE9but doit \xEAtre ant\xE9rieure \xE0 la date de fin.');
+      return;
+    }
+    setStartDate(value);
+  };
+
+  const handleEndChange = (e) => {
+    const value = e.target.value;
+    if (startDate && value && value < startDate) {
+      alert('La date de fin doit \xEAtre post\xE9rieure \xE0 la date de d\xE9but.');
+      return;
+    }
+    setEndDate(value);
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.toggle}>
@@ -97,13 +115,13 @@ function MonthFilter({
           <input
             type="date"
             value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
+            onChange={handleStartChange}
             style={styles.input}
           />
           <input
             type="date"
             value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
+            onChange={handleEndChange}
             style={styles.input}
           />
         </div>
