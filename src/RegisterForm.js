@@ -5,15 +5,21 @@ export default function RegisterForm({ goToLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
+  const [accepted, setAccepted] = useState(false);
 
   const handleRegister = async () => {
     if (!email.trim() || !password || !confirm) {
       alert('Veuillez remplir tous les champs.');
       return;
     }
-    
+
     if (password !== confirm) {
       alert("Les mots de passe ne correspondent pas.");
+      return;
+    }
+
+    if (!accepted) {
+      alert("Vous devez accepter les CGU et la politique de confidentialité.");
       return;
     }
 
@@ -34,6 +40,12 @@ export default function RegisterForm({ goToLogin }) {
         <input type="email" placeholder="Mail" style={styles.input} onChange={(e) => setEmail(e.target.value)} />
         <input type="password" placeholder="Mot de passe" style={styles.input} onChange={(e) => setPassword(e.target.value)} />
         <input type="password" placeholder="Confirmer le mot de passe" style={styles.input} onChange={(e) => setConfirm(e.target.value)} />
+        <label style={styles.checkboxLabel}>
+          <input type="checkbox" checked={accepted} onChange={(e) => setAccepted(e.target.checked)} style={styles.checkbox} />
+          J'ai lu et j'accepte les
+          <a href="/cgu" style={styles.policyLink}> CGU</a> et la
+          <a href="/privacy" style={styles.policyLink}> Politique de Confidentialité</a>
+        </label>
         <button style={styles.button} onClick={handleRegister}>S’inscrire</button>
         <p style={styles.link} onClick={goToLogin}>Connexion</p>
       </div>
@@ -97,5 +109,22 @@ const styles = {
     cursor: 'pointer',
     textDecoration: 'underline',
     marginTop: '0.5rem',
+    },
+  checkboxLabel: {
+    fontFamily: 'Galdeano, sans-serif',
+    fontSize: '0.9rem',
+    color: '#000',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+  },
+  checkbox: {
+    marginRight: '0.25rem',
+  },
+  policyLink: {
+    color: '#06a77d',
+    textDecoration: 'underline',
+    marginLeft: '0.25rem',
+    marginRight: '0.25rem',
   }
 };

@@ -7,6 +7,8 @@ import MonthFilter from './MonthFilter';
 import Graph from './Graph';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
+import Terms from './Terms';
+import Privacy from './Privacy';
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 
 function App() {
@@ -131,6 +133,8 @@ function App() {
           path="/register"
           element={<RegisterForm onLogin={setUser} goToLogin={() => navigate('/login')} />}
         />
+        <Route path="/cgu" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
         <Route
           path="*"
           element={<LoginForm onLogin={setUser} goToRegister={() => navigate('/register')} />}
@@ -167,6 +171,8 @@ function App() {
           path="/graph"
           element={<Graph transactions={filteredTransactions} />}
         />
+        <Route path="/cgu" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
       <Route
           path="*"
           element={
