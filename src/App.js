@@ -9,6 +9,7 @@ import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
 import Terms from './Terms';
 import Privacy from './Privacy';
+import Profile from './Profile';
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 
 function App() {
@@ -78,7 +79,6 @@ function App() {
       return;
     }
 
-  // 👇 Construction de l’objet à insérer
   const toInsert = { ...newTransaction, user_id: user.id };
   console.log("Transaction insérée :", toInsert); // debug facultatif
 
@@ -133,6 +133,10 @@ function App() {
           path="/register"
           element={<RegisterForm onLogin={setUser} goToLogin={() => navigate('/login')} />}
         />
+        <Route
+          path="/login"
+          element={<LoginForm onLogin={setUser} goToRegister={() => navigate('/register')} />}
+        />
         <Route path="/cgu" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route
@@ -171,9 +175,10 @@ function App() {
           path="/graph"
           element={<Graph transactions={filteredTransactions} />}
         />
+         <Route path="/profile" element={<Profile />} />
         <Route path="/cgu" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
-      <Route
+        <Route
           path="*"
           element={
             <History
