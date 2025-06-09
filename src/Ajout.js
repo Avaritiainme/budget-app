@@ -80,10 +80,11 @@ function Ajout({ onAdd }) {
       />
       <input
         type="date"
+        aria-label="date"
         value={date}
         onChange={(e) => setDate(e.target.value)}
         style={styles.date}
-      />
+      />yle={styles.date}
       <button type="submit" style={styles.button}>Ajouter</button>
     </form>
   )
