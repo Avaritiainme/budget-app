@@ -105,10 +105,15 @@ const styles = {
     cursor: 'pointer',
   },
   link: {
-    color: '#06a77d',
+    color: '#fff',
     cursor: 'pointer',
-    textDecoration: 'underline',
+    textDecoration: 'none',
     marginTop: '0.5rem',
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    padding: '0.25rem 0.75rem',
+    borderRadius: '12px',
+    fontWeight: 'bold',
+    textShadow: '1px 1px 2px rgba(0,0,0,0.7)',
     },
   checkboxLabel: {
     fontFamily: 'Galdeano, sans-serif',
@@ -122,9 +127,13 @@ const styles = {
     marginRight: '0.25rem',
   },
   policyLink: {
-    color: '#06a77d',
-    textDecoration: 'underline',
+    color: '#fff',
+    textDecoration: 'none',
     marginLeft: '0.25rem',
     marginRight: '0.25rem',
+     backgroundColor: 'rgba(0,0,0,0.6)',
+    padding: '0.1rem 0.4rem',
+    borderRadius: '8px',
+    textShadow: '1px 1px 2px rgba(0,0,0,0.7)',
   }
 };

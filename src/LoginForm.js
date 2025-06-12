@@ -107,9 +107,14 @@ const styles = {
     cursor: 'pointer',
   },
   link: {
-    color: '#06a77d',
+    color: '#fff',
     cursor: 'pointer',
-    textDecoration: 'underline',
+    textDecoration: 'none',
     marginTop: '0.5rem',
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    padding: '0.25rem 0.75rem',
+    borderRadius: '12px',
+    fontWeight: 'bold',
+    textShadow: '1px 1px 2px rgba(0,0,0,0.7)',
   }
 };

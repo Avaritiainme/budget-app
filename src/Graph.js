@@ -34,8 +34,28 @@ function Graph({ transactions }) {
     padding: '0.5rem 1rem',
     display: 'inline-block',
     borderRadius: '8px',
-    color: '#fff',
-    textShadow: '1px 1px 3px rgba(0,0,0,0.7)',
+     color: '#fff',
+      textShadow: '1px 1px 3px rgba(0,0,0,0.7)',
+    },
+    details: {
+      display: 'flex',
+      justifyContent: 'center',
+      gap: '1rem',
+      marginTop: '1rem',
+    },
+    income: {
+      backgroundColor: '#9B59B6',
+      color: '#fff',
+      padding: '0.25rem 0.5rem',
+      borderRadius: '4px',
+      textShadow: '1px 1px 2px rgba(0,0,0,0.7)',
+    },
+    expense: {
+      backgroundColor: '#E04949',
+      color: '#fff',
+      padding: '0.25rem 0.5rem',
+      borderRadius: '4px',
+      textShadow: '1px 1px 2px rgba(0,0,0,0.7)',
     },
     total: {
       fontSize: '1.5rem',
@@ -92,6 +112,10 @@ function Graph({ transactions }) {
                         <Legend />
                     </PieChart>
                 </ResponsiveContainer>
+            </div>
+             <div style={styles.details}>
+                <span style={styles.income}>Revenus: {revenus.toFixed(2)} €</span>
+                <span style={styles.expense}>Dépenses: {depenses.toFixed(2)} €</span>
             </div>
             <div style={styles.total}>
                 Total: {total >= 0 ? '+' : ''}{total.toFixed(2)} €
